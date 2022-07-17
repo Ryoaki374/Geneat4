@@ -7,5 +7,5 @@ password generator for particle physicist
 3. Generate!
 
 - Caution  
-You can set only leptons because it dose not have data of baryons. 
+You can set only leptons because it dose not have data of baryons.  
 Have fun!
