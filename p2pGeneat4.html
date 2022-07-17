@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>P2P Geneat4</title>
+    <link rel="stylesheet" href="./body.css">
+    <script src="./table_lepton.js"></script>
+</head>
+
+<body>
+
+    <script>
+        //read table js
+        let particle_name = Array(lepton.length);//これは後でlowerparticleと統合しても良い
+
+        let capital_array = Array(button.length)
+        for (let i = 0; i < button.length; i++) {
+            capital_array[i] = Array(lepton.length)
+            for (let j = 0; j < lepton.length; j++) {
+                capital_array[i][j] = 0;
+            }
+        }
+
+
+        let restmass = Array(lepton.length);
+        let upper_particle = Array(lepton.length);
+        let lower_particle = Array(lepton.length);
+        let unit = Array(lepton.length);
+
+        let password_phrase_array = Array();//pass phrase array
+
+        let password = '';
+        let password_base = '';//password_baseはランダム拡張用
+
+        //if (document.getElementById('rule_restmass').checked) {
+
+        // read lepton data
+        for (i = 0; i < lepton.length; i++) {
+
+            particle_name[i] = lepton[i][0];
+            capital_array[0][i] = lepton[i][1];//restmass
+            capital_array[1][i] = lepton[i][0];//lower case
+            capital_array[2][i] = capital_array[1][i].toUpperCase();//upper case
+            capital_array[3][i] = lepton[i][2];//unit
+
+
+        };
+        //};
+        console.log(capital_array[0], capital_array[1], capital_array[2], capital_array[3], particle_name)//debug table check
+        //console.log(password_base_array)
+    </script>
+
+
+    <script>
+        function genPassphrase() {
+            changeFlag();//チェックされたボックスを取得
+            let count = 0;//これでphraseの配列入れる
+            for (let i = 0; i < flag_rule.length; i++) {
+                if (flag_rule[i] == 1) {
+
+                    for (let j = 0; j < flag.length; j++) {
+                        if (flag[j] == 1) {
+                            password_phrase_array[count] = capital_array[i][j];
+                            count += 1
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+
+
+                }
+
+                if (flag_rule[i] == 0) {
+                    continue;
+                }
+            }
+            //password_baseはランダム拡張用
+            for (let i = 0; i < password_phrase_array.length; i++) {
+                password_base += password_phrase_array[i]
+            }
+            console.log(password_phrase_array)
+            console.log(password_base)
+        }
+
+        function genPassword(length) {
+            password = '';            
+            //Fisher–Yates shuffle
+            for (let i = password_phrase_array.length - 1; i >= 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [password_phrase_array[i], password_phrase_array[j]] = [password_phrase_array[j], password_phrase_array[i]];
+            }
+
+            for (let i = 0; i < password_phrase_array.length; i++) {
+                //ランダム並びの拡張用
+                //password += password_base.charAt(Math.floor(Math.random() * password_base.length));
+                //console.log(password)
+                password += password_phrase_array[i]
+            }
+            return password;
+        }
+
+        //getelementで書き換え
+        function setPassword(id) {
+            genPassphrase();
+
+            let rule_length = 12;
+            document.getElementById(id).value = '';
+            document.getElementById(id).value = genPassword(rule_length);
+            //表示パスワードの確認用
+            console.log(document.getElementById(id).value)
+
+            //初期化
+            password_phrase_array.length = 0;
+            password_base = " ";
+
+            //debug
+            console.log(flag, flag_rule)
+            console.log(password_base)
+        }
+    </script>
+
+
+    <!--main form-->
+    <large>"Particle to Password" Generator4 (P2P Geneat4)</large>
+    <br>
+    <form>
+        <fieldset>
+            <!--formに枠を付ける、横の大きさは自動で一番大きいやつにあう（autoscaleで横幅いっぱいなだけかも）-->
+            <legend class="step1">
+                1.好きな粒子を選んでね。
+            </legend>
+            <p>
+                <label><input type="checkbox" id="particle_lepton" onchange="changeBox()">leptons: </label>
+                <label><input type="checkbox" id="electron" disabled>electron</label>
+                <label><input type="checkbox" id="muon" disabled>muon</label>
+                <label><input type="checkbox" id="tau" disabled>tau</label>
+            </p>
+            <p>
+                <label><input type="checkbox" id="particle_baryon" disabled>baryons: </label>
+            </p>
+        </fieldset>
+    </form>
+    <br>
+    <form>
+        <fieldset>
+            <legend class="step2">
+                2.文字の種類を選んでね。
+            </legend>
+            <label><input type="checkbox" id="rule_restmass">rest mass(number)</label>
+            <label><input type="checkbox" id="rule_lowercase">particle(lower case)</label>
+            <label><input type="checkbox" id="rule_uppercase">particle(upper case)</label>
+            <label><input type="checkbox" id="rule_unit">unit</label>
+        </fieldset>
+    </form>
+    <br>
+    <form>
+        <fieldset>
+            <legend class="step3">
+                3.あなたのパスワードを生成するよ
+            </legend>
+            <p>
+                <input type="button" onclick="setPassword('passwd');" value="Generate !">
+                <input id="passwd" type="text" style="width:400px;">
+                <button onclick="copyToClipboard()">Copy Clipboard</button>
+            </p>
+        </fieldset>
+    </form>
+
+    <form>
+        <ul>
+            <li>測定に伴う不確かさは考慮しないものとする。</li>
+            <li>自然界の粒子たちがセキュアなパスワードとなってあなたを守ります。</li>
+            <li>このサイトはジョークとして楽しんでもらえたらと思います。</li>
+        </ul>
+    </form>
+
+    <script>
+        function copyToClipboard() {
+            // コピー対象をJavaScript上で変数として定義する
+            var copyTarget = document.getElementById("passwd");
+
+            // コピー対象のテキストを選択する
+            copyTarget.select();
+
+            // 選択しているテキストをクリップボードにコピーする
+            document.execCommand("Copy");
+        }
+    </script>
+
+    <script>
+        function changeBox() {
+            if (document.getElementById("particle_lepton").checked) {
+                document.getElementById(particle_name[0]).disabled = false;
+                document.getElementById(particle_name[1]).disabled = false;
+                document.getElementById(particle_name[2]).disabled = false;
+            }
+            else {
+                document.getElementById(particle_name[0]).disabled = true;
+                document.getElementById(particle_name[1]).disabled = true;
+                document.getElementById(particle_name[2]).disabled = true;
+            }
+
+            //2ステップに進んだら粒子の選択ができないようにする（debug）
+            if (document.getElementById("particle_lepton").disabled == true) {
+                document.getElementById(particle_name[0]).disabled = true;
+                document.getElementById(particle_name[1]).disabled = true;
+                document.getElementById(particle_name[2]).disabled = true;
+            }
+        }
+
+        let flag = Array(particle_name.length);
+        let flag_rule = Array(rule.length);
+        function changeFlag() {
+
+            //step2に進んだら粒子の選択ができないようにする（debug）
+            //document.getElementById("particle_lepton").disabled = true;
+            //changeBox()//この関数でステップ1を選択不可にする。
+            //
+
+            for (let i = 0; i < particle_name.length; i++) {
+                if (document.getElementById(particle_name[i]).checked) {
+                    flag[i] = 1
+                }
+                else {
+                    flag[i] = 0
+                }
+            }
+
+            for (let i = 0; i < rule.length; i++) {
+                if (document.getElementById(rule[i]).checked) {
+                    flag_rule[i] = 1
+                }
+                else {
+                    flag_rule[i] = 0
+                }
+            }
+        }
+    </script>
+
+    <large>
+        <div id="copyright">&copy; 2022 Ryosuke.A --------Contact--------> <a
+                href="https://twitter.com/chikurinJP">Twitter</a></div>
+    </large>
+
+</body>
+
+</html>
