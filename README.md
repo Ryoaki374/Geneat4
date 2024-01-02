@@ -7,6 +7,7 @@
 2. Select your favorite particle.
 3. Select capital types.
 4. Generate your powerful passwords with elementary particles!
+<img width="586" alt="スクリーンショット 2024-01-03 055931" src="https://github.com/Ryoaki374/Geneat4/assets/84809105/bbef7a5b-debc-4332-9cb3-94a3153ea05e">
 
 # Caution  
 You can choise only leptons because it dose not have data of baryons.  
